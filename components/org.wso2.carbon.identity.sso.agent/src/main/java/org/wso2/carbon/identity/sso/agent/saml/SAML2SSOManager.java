@@ -352,6 +352,7 @@ public class SAML2SSOManager {
                  * still waiting to get triggered and at the end of the chain session needs to be
                  * invalidated by the system
                  */
+                String domain  = (String)request.getSession(false).getAttribute("tenantDomain");
                 Set<HttpSession> sessions =
                         SSOAgentSessionManager.invalidateAllSessions(request.getSession(false));
                 for (HttpSession session : sessions) {
@@ -366,6 +367,7 @@ public class SAML2SSOManager {
                         //session is already invalidated
                     }
                 }
+                request.getSession().setAttribute("tenantDomain",domain);
             }
         } else {
             throw new SSOAgentException("Invalid SAML2 Single Logout Request/Response");

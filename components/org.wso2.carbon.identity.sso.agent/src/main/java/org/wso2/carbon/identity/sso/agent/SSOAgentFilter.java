@@ -35,6 +35,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,6 +72,13 @@ public class SSOAgentFilter implements Filter {
             if (ssoAgentConfig == null) {
                 throw new SSOAgentException("Cannot find " + SSOAgentConstants.CONFIG_BEAN_NAME +
                         " set a request attribute. Unable to proceed further");
+            }
+
+            if (request.getSession(false) != null && request.getSession(false).getAttribute("tenantDomain") != null) {
+                String[] strArray = new String[] { (String) request.getSession(false).getAttribute("tenantDomain") };
+                Map<String, String[]> queryParam = new HashMap<>();
+                queryParam.put("tenantDomain", strArray);
+                ssoAgentConfig.setQueryParams(queryParam);
             }
 
             SSOAgentRequestResolver resolver =
